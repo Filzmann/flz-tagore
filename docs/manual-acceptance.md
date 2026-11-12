@@ -20,9 +20,9 @@
 | PR-/`main`-CI / PHP 8.1 und 8.5 | Unabhängiger Bootstrap und Quality-Pull-Request | remote grün |
 
 - `./scripts/check-fast` prüft Theme-Struktur und JavaScript-Smoke.
-- Die PHP-Line-Coverage liegt lokal bei 7,87 Prozent, die JavaScript-
-  Line-Coverage bei 92,24 Prozent; beide Gates sind als No-Regression-
-  Baseline `configured`, bis ein grüner Remote-Lauf vorliegt. Die PHP-
+- Die PHP-Line-Coverage liegt bei 7,87 Prozent, die JavaScript-Line-Coverage
+  bei 92,24 Prozent; beide Baselines sind nach grünem Remote-Lauf als
+  No-Regression-Gates `enforced`. Die PHP-
   Baseline enthält bewusst keine künstliche WordPress-Simulation und muss
   mit echten Theme-Integrationstests ausgebaut werden.
 - Die getrennte Vergleichsinstanz belegt, dass `flz-tagore` mit deaktiviertem
