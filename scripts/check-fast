@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo"
+
+find . -path './.git' -prune -o -path './vendor' -prune -o -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l >/dev/null
+php tests/theme-structure-smoke.php
+php tests/theme-php-coverage-smoke.php
+node tests/run-js.mjs
+git diff --check
+echo 'OK: fast theme checks completed.'

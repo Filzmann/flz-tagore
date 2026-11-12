@@ -1,0 +1,127 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1', '8.5']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --no-progress --prefer-dist
+      - run: ./scripts/check-fast
+
+  coverage:
+    name: PHP-Coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: flz-tagore
+      - name: Quality-Workspace-Referenz bestimmen
+        id: quality-ref
+        env:
+          CANDIDATE_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if git ls-remote --exit-code --heads https://github.com/Filzmann/tagore-plugins.git "refs/heads/$CANDIDATE_REF" >/dev/null 2>&1; then
+            echo "ref=$CANDIDATE_REF" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        with:
+          repository: Filzmann/tagore-plugins
+          ref: ${{ steps.quality-ref.outputs.ref }}
+          path: tagore-plugins
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: xdebug
+          extensions: mbstring
+          tools: composer:v2
+      - run: composer install --working-dir=tagore-plugins/tests/coverage --no-interaction --no-progress --prefer-dist
+      - run: |
+          tagore-plugins/scripts/measure-component-php-coverage \
+            flz-tagore flz-tagore \
+            "$GITHUB_WORKSPACE/tagore-plugins/tests/coverage/vendor/bin/phpcov" \
+            "$RUNNER_TEMP/php-coverage"
+
+  javascript:
+    name: JavaScript-Coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: flz-tagore
+      - name: Quality-Workspace-Referenz bestimmen
+        id: quality-ref
+        env:
+          CANDIDATE_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if git ls-remote --exit-code --heads https://github.com/Filzmann/tagore-plugins.git "refs/heads/$CANDIDATE_REF" >/dev/null 2>&1; then
+            echo "ref=$CANDIDATE_REF" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        with:
+          repository: Filzmann/tagore-plugins
+          ref: ${{ steps.quality-ref.outputs.ref }}
+          path: tagore-plugins
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --prefix tagore-plugins/tests/coverage --ignore-scripts
+      - run: |
+          tagore-plugins/scripts/measure-component-js-coverage \
+            flz-tagore flz-tagore \
+            "$GITHUB_WORKSPACE/tagore-plugins/tests/coverage/node_modules/.bin/c8" \
+            "$RUNNER_TEMP/js-coverage"
+
+  release:
+    name: Release-Artefakt
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: flz-tagore
+      - name: Quality-Workspace-Referenz bestimmen
+        id: quality-ref
+        env:
+          CANDIDATE_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if git ls-remote --exit-code --heads https://github.com/Filzmann/tagore-plugins.git "refs/heads/$CANDIDATE_REF" >/dev/null 2>&1; then
+            echo "ref=$CANDIDATE_REF" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        with:
+          repository: Filzmann/tagore-plugins
+          ref: ${{ steps.quality-ref.outputs.ref }}
+          path: tagore-plugins
+      - run: tagore-plugins/scripts/verify-component-release flz-tagore flz-tagore "$RUNNER_TEMP/release-verification"

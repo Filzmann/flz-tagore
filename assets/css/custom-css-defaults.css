@@ -1,0 +1,23 @@
+/*
+ * FLZ TAGORE: BEARBEITBARES CUSTOM CSS
+ *
+ * Dieser kommentierte Startblock wird beim Aktivieren des Themes einmalig und
+ * additiv nach „Customizer → Zusätzliches CSS“ kopiert. Eigene Regeln bleiben
+ * beim Themewechsel und bei einer erneuten Aktivierung unverändert erhalten.
+ *
+ * Für seitenbezogene Regeln nutze das Feld „Seitenbezogenes CSS“ direkt an
+ * der Seite. CSS für Popups, Formulare oder Templates gehört in deren
+ * jeweiliges Plugin bzw. Inhaltsobjekt.
+ *
+ * Wiederverwendbare Layoutwerte: Bei Bedarf die gewünschten Zeilen aus dem
+ * folgenden Beispiel aktivieren und anpassen. Relative Einheiten sorgen für
+ * ein robustes Layout bei Zoom und größeren Grundschriften.
+ *
+ * :root {
+ *   --flz-layout-gutter: clamp(1rem, 3vw, 2.5rem);
+ *   --flz-wide-content-width: 100rem;
+ *   --flz-header-logo-max: 10rem;
+ *   --flz-header-control-height: 3.25rem;
+ *   --flz-nav-submenu-width: 18.5rem;
+ * }
+ */
