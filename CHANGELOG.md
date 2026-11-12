@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Quality-Rollout für den unabhängigen öffentlichen Anfangsstand.
+
 ## 0.2.1 - 2026-10-20
 
 - Eigenständige, tastaturbedienbare Dropdown-Navigation für die bestehende
