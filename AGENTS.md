@@ -18,6 +18,9 @@ ohne dass Herkunft, Lizenz und konkreter Bedarf vorab geklärt sind.
   wird nie durch einen Strukturtest ersetzt.
 ## Commit-, Coverage- und Release-Gates
 
+- Der Übernahmestand ist Phase 2: CI sowie PHP- und JavaScript-Coverage
+  sind remote geprüft; die Baselines bleiben als Ratschen verbindlich.
+  Die manuelle Abnahme und das Release-Gate bleiben davon unberührt.
 - Die Commit-, Coverage- und Release-Gates sind im
   `docs/manual-acceptance.md` dokumentiert; für ausführbaren neuen oder
   wesentlich geänderten Code gilt das Ziel von 85 Prozent Line-Coverage.
